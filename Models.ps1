@@ -151,11 +151,11 @@ class CloseOpenApplication {
 
     [void] PrintDebugInformation() {
         if ($this._applicationIsClosed) {
-            Write-Host "Clickonce application is not currently active, continuing" -ForegroundColor green
+            Write-Host "Clickonce application is not currently active, continuing" -ForegroundColor Green
             return
         } 
         
-        Write-Host "ClickOnce '$($this._process.ProcessName)' application active! " -ForegroundColor red -NoNewline
+        Write-Host "ClickOnce '$($this._process.ProcessName)' application active! " -ForegroundColor Red -NoNewline
         Write-Host "Closing..."
     }
 
@@ -355,30 +355,31 @@ class RemoveStartMenuEntry {
         $this._foldersToRemove = @()
 
         $programsFolder = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::Programs)
-        $folder = Join-Path $programsFolder -ChildPath $this._uninstallInfo.ShortcutFolderName
-        $suiteFolder = Join-Path $folder -ChildPath $this._uninstallInfo.ShortcutSuiteName
-        $shortcut = Join-Path $suiteFolder -ChildPath "$($this._uninstallInfo.ShortcutFileName).appref-ms"
-        $supportShortcut = Join-Path $suiteFolder -ChildPath "$($this._uninstallInfo.SupportShortcutFileName).url"
+        $shortcutFolder = Join-Path $programsFolder -ChildPath $this._uninstallInfo.ShortcutFolderName
+        $suiteFolder = Join-Path $shortcutFolder -ChildPath $this._uninstallInfo.ShortcutSuiteName
+        $shortcutFilePath = Join-Path $suiteFolder -ChildPath "$($this._uninstallInfo.ShortcutFileName).appref-ms"
+        $supportShortcutFilePath = Join-Path $suiteFolder -ChildPath "$($this._uninstallInfo.SupportShortcutFileName).url"
+
         $desktopFolder = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::Desktop)
-        $desktopShortcut = Join-Path $desktopFolder -ChildPath "$($this._uninstallInfo.ShortcutFileName).appref-ms"
-        if (Test-Path $shortcut) {
-            $this._filesToRemove += $shortcut
+        $desktopShortcutFilePath = Join-Path $desktopFolder -ChildPath "$($this._uninstallInfo.ShortcutFileName).appref-ms"
+        if (Test-Path $shortcutFilePath) {
+            $this._filesToRemove += $shortcutFilePath
         }
-        if (Test-Path $supportShortcut) {
-            $this._filesToRemove += $supportShortcut
+        if (Test-Path $supportShortcutFilePath) {
+            $this._filesToRemove += $supportShortcutFilePath
         }
-        if (Test-Path $desktopShortcut) {
-            $this._filesToRemove += $desktopShortcut
+        if (Test-Path $desktopShortcutFilePath) {
+            $this._filesToRemove += $desktopShortcutFilePath
         }
 
         if ((Test-Path $suiteFolder) -and ($this._filesToRemove | Where-Object { $_ -notin (Get-ChildItem $suiteFolder -file).FullName }).Count -eq 0) {
             $this._foldersToRemove += $suiteFolder
 
-            $folderFolders = Get-ChildItem $folder -Directory
-            $folderFiles = Get-ChildItem $folder -File
+            $folderFolders = Get-ChildItem $suiteFolder -Directory
+            $folderFiles = Get-ChildItem $suiteFolder -File
 
             if ($folderFolders.Count -eq 1 -and $folderFiles.Count -eq 0) {
-                $this._foldersToRemove += $folder
+                $this._foldersToRemove += $suiteFolder
             }
         }
     }
@@ -519,8 +520,8 @@ class Uninstaller {
 # SIG # Begin signature block
 # MIIfMgYJKoZIhvcNAQcCoIIfIzCCHx8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDmbcPaFJJO2cD0
-# 4BFw8d/6hDR3mLfNG3k/CYiJKxvZu6CCGU8wggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBad1V+soD7jO4F
+# 15AxjrlNcBk1v/pNOgAliMermhQFz6CCGU8wggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -660,28 +661,28 @@ class Uninstaller {
 # DUF0c0NlcnRTcnYwMDICE0sAA0r425HiXSwHX7YAAQADSvgwDQYJYIZIAWUDBAIB
 # BQCggYQwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYK
 # KwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG
-# 9w0BCQQxIgQgNnc3ttMspFMCumoctunUJhyOeMrXAHMmoIjy1ZkuYekwDQYJKoZI
-# hvcNAQEBBQAEggEAPK2FeLkU4ecMfAO60CCuC7cxvFtZKEX8fExxhzEIIfmjtF+v
-# 7oTkGNjOHFRw/EfSsJ4l1B1ZfIRHrz1LgZlbUEgqqueT3EHnuym/WzVVcFmoCKQ4
-# xEuSNbfWIaNYy3e8YLFWk/gBFsM5+qGscb2LeDW7kW3oIxwPXJmr1ZziJGMRyN9m
-# /izw7fReZ14bv8Yb99ajp3wj0zrZezy8bxFe5U9PSlj7I1Qa0TfhKrA/E5ylJ7Dn
-# 9Smg/73luUGBfFBmwYGGf50L8jEq0QheesAwJdpSaFxfZnd0sTWCvPPbsUodcVYv
-# GD8zh/S25QnWORzk24dXLY1DTQ8qxRhFnePBIaGCAyYwggMiBgkqhkiG9w0BCQYx
+# 9w0BCQQxIgQgUaGrj3XyAxvYDIM4zrUdRk3z0yvvQpN8+ULPEd4Tz54wDQYJKoZI
+# hvcNAQEBBQAEggEAPh+sUamh+0Fec+kIv3sAc4itkr70U/4ZA/o9weF4rUayG3XV
+# Wtmu6XQihJjM+9STwTOl+PybuPyAJDSzy1mCbTwASUSdFPNQfy/niWWvn5IUeYHf
+# oYi0tWNoXCW5C3HVReOGgUFzxP2sNAd4VOI/nXDi3tzdek31Poc8NLSjlxd0E3C3
+# GgJrPoA5IeYr9CcyGA4N0CFda1wbTiiZpIaAjdyvjt5m3Z1TwTrSODCi9emXCRUI
+# bjEv1L3V5jYBbWiIM5rjY/Zl9YGHPYu7KjSjKODTZhQcLunaBIIVUOZ+56wDYaNR
+# qNn8RyCpVfKoMnCbWOtnLmrzTBKjiXhppFK0WaGCAyYwggMiBgkqhkiG9w0BCQYx
 # ggMTMIIDDwIBATB9MGkxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwg
 # SW5jLjFBMD8GA1UEAxM4RGlnaUNlcnQgVHJ1c3RlZCBHNCBUaW1lU3RhbXBpbmcg
 # UlNBNDA5NiBTSEEyNTYgMjAyNSBDQTECEAqA7xhLjfEFgtHEdqeVdGgwDQYJYIZI
 # AWUDBAIBBQCgaTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-# BTEPFw0yNjAzMTgxMDA2MDRaMC8GCSqGSIb3DQEJBDEiBCBKSlD71kOskuWUfh2D
-# yba9rJ7dSen8KguFEph9CKUW+jANBgkqhkiG9w0BAQEFAASCAgCd+emvQVPDhTwd
-# qqQCOHnAHl+XM04V8NmMO6aPgYHalmOaMjxw0xlxbjWvTjD2YUvwH4Qp2TydvopH
-# v2ArXSl+DEZnQ2ZDkDmrofv8/5mHWgKDOHmISm1RaVOrN371saSlNCOML3D6cpqd
-# pjPUWjiFlym0eD9loW/pqpvC1W46lL6vov1kgN/TsZ9eW8TaQ5AL8e+xOtboc3ZT
-# hygv59WyLyu8ymwEKbsZi0DLbDoM0zRXWeLs4smj+kSE8bPzXrE1zwxslbtGt5pG
-# 7XYWZUhQxyr096dcvqgBVhVJVFY9jBRkBSfzSS+X4cAXSlkqacQwvhm8z6t2Ei/L
-# HbrFbTKUdjZ5YL4PgoAUUVtUr2gPIAWyatp4FYHf+Xt/304m2yYv+jHc9STqM3hK
-# BakcRzQvHapFDZXpgx4X8QGObcsxEgRRCZQwuKJkvSdFvpfhRb4rTKnsYObhrq0K
-# vB/7X1kKZ9CRZqyeN8IPIUk9KUl7KJao2TWdTCsDA6WjOGqGOHXbzjLHoka6mkhP
-# 2nPdZ1GFYO88+QRa59RuNx55U9zy6mAYVrk5NG4O2Yl+47TNNP7za/BBVaLkkiyn
-# lF0l5CsmAeNmV8WG8Fup2GYMuyFo58IqOiubGfMPdzAA4EN0bMfIypoXtckGaJMF
-# z/ghXNymdm5PuVqnPRayZNPz0iEolA==
+# BTEPFw0yNjAzMTgxMDU3MzFaMC8GCSqGSIb3DQEJBDEiBCAiD7J9xgWo8HIIIsWJ
+# /Nw+5w3GlV1f9WJ718eaz9QWwDANBgkqhkiG9w0BAQEFAASCAgDFkeCd4rKiNqLC
+# cNoq29DwJ9VrhAPv7Dixva6h3z1ZAnKbM1ZdIGMpKc9jTsFRHi86aLY5QZ+H24Gu
+# mxILBuWO6Icl8AEX1S7DedwPgClXIFRRrNtot54Af19Hae/yHA8S6wXBd9As6VrF
+# 9M6LjpFpu0G8eu7iPmljHO5sm176gZjd2HozAqfftnXXWo2uJxjbtSoZOIzC1ivP
+# mVqACXMJlKjoXDjeUO4Iu3QOrea0k4vpvry+i9HWUoJe2bKJ5+C7SG75uPYAimAi
+# Z/HwID0FoGNcFfNaOH7Mx081D7ZFCnJL3dAzvFXRwYEmfF6aw9I8IHI1v4+LujY6
+# BPcxHlVwbpySzoDgX5EulQr8v+l27gWlQPtACAjqwK6b7FGrgtD7tvFTqLpvNiU+
+# T6nwihB+/X7U99pRrAzPI+3zzZ4qpFlAaleKstaA75ZEhP/9ysEpoBJWQ0RzNhTc
+# OdUuQnoRId8RWypPWfKe4mXN/SICCT07OvKC4aGAL7ZxNGi58uT2VPpVjmuJ2Gjf
+# pw0NEonHWq4PQjxbOgvaG0kTRmJU/gNz6Y2rKFtgp0yZANB744MaoWFwduXAc5Tc
+# qoi2LKHkAJ8GhzSXE5dz5MceDUUcGJaIo7Apkiys6hYDBnmYsFw5fHG4s90qCpHh
+# ZpHr7FLlYWNSakZ3f0FxyTjALEZUrA==
 # SIG # End signature block
